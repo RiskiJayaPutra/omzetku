@@ -1,0 +1,37 @@
+name: omzetku
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+  shared_preferences: ^2.2.2
+  intl: ^0.20.2
+  uuid: ^4.3.3
+  image_picker: ^1.0.7
+  image_cropper: ^8.0.2
+  fl_chart: ^0.66.2
+  firebase_core: ^4.2.1
+  firebase_auth: ^6.1.2
+  cloud_firestore: ^6.1.0
+  firebase_storage: ^13.0.4
+  file_picker: ^8.3.0
+  path_provider: ^2.1.5
+  path_provider_windows: ^2.3.0
+  share_plus: ^10.1.4
+  csv: ^6.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/

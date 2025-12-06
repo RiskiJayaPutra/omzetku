@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1089493431892",
+    "project_id": "omzet-ku",
+    "storage_bucket": "omzet-ku.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089493431892:android:08b5b93e8c389cd6fa9fc1",
+        "android_client_info": {
+          "package_name": "com.example.omzetku"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnyHwPEGI5ITGA2VFKGbEY7vd-z0lxkRU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
