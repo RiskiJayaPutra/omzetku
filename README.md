@@ -1,298 +1,286 @@
-# OmzetKu - Aplikasi Manajemen Keuangan UMKM
+# Omzetku - Aplikasi Manajemen Keuangan UMKM
 
-Aplikasi mobile untuk mencatat dan mengelola transaksi keuangan UMKM dengan backend Laravel API.
+Aplikasi manajemen keuangan berbasis Flutter dan Laravel yang dirancang khusus untuk membantu pelaku UMKM dalam mengelola transaksi, menganalisis keuangan, dan membuat keputusan bisnis yang lebih baik.
 
-## 📱 Fitur Aplikasi
+## Fitur Utama
 
-### ✅ Sudah Terintegrasi dengan Database
+### Manajemen Transaksi
+- Pencatatan transaksi pemasukan dan pengeluaran dengan kategori lengkap
+- Sistem produk terintegrasi dengan perhitungan otomatis berdasarkan quantity
+- Dukungan untuk transaksi produk fisik dan jasa
+- Edit dan hapus transaksi dengan konfirmasi keamanan
+- Filter dan pencarian transaksi berdasarkan tanggal, kategori, dan tipe
 
-- 🔐 **Autentikasi User** - Register, Login, Logout dengan Laravel Sanctum
-- 💰 **Manajemen Transaksi** - Tambah, Lihat, Hapus transaksi (Pemasukan/Pengeluaran)
-- 🔍 **Pencarian Riwayat** - Cari transaksi berdasarkan judul, kategori, atau catatan
-- 📊 **Statistik Real-time** - Saldo, total pemasukan, dan pengeluaran
-- 📅 **Filter Transaksi** - Tampilkan transaksi hari ini
-- 🎨 **UI/UX Modern** - Desain clean dengan kategori berwarna
+### Manajemen Produk
+- Database produk dengan harga dan tipe (fisik/jasa)
+- Perhitungan otomatis nominal transaksi: harga × quantity
+- Tracking quantity produk yang terjual
+- Auto-fill informasi produk saat membuat transaksi
 
-## 🏗️ Struktur Project
+### Visualisasi Data
+- Dashboard dengan ringkasan keuangan real-time
+- Grafik pemasukan dan pengeluaran
+- Analisis tren keuangan per periode
+- Perhitungan otomatis saldo, total pemasukan, dan pengeluaran
 
+### Manajemen Profil
+- Profil UMKM dengan informasi lengkap
+- Upload dan update foto profil
+- Data UMKM: nama, alamat, deskripsi, dan jenis usaha
+- Edit profil dengan validasi form
+
+## Teknologi
+
+### Frontend (Flutter)
+- **Framework**: Flutter 3.24.5
+- **Language**: Dart 3.5.4
+- **State Management**: StatefulWidget
+- **HTTP Client**: http package
+- **Charts**: fl_chart
+- **Authentication**: Firebase Auth & Laravel Sanctum
+- **Image Handling**: image_picker, http_parser
+
+### Backend (Laravel)
+- **Framework**: Laravel 12.x
+- **Language**: PHP 8.2+
+- **Database**: PostgreSQL 14+
+- **Authentication**: Laravel Sanctum
+- **API**: RESTful API
+- **File Storage**: Local storage dengan CORS support
+
+### Database Schema
+- **users**: Data pengguna dan informasi UMKM
+- **transactions**: Transaksi dengan relasi ke produk
+- **products**: Database produk dengan harga dan tipe
+- **personal_access_tokens**: Token autentikasi Sanctum
+
+## Instalasi
+
+### Prasyarat
 ```
-Project/
-├── omzetku/                 # Flutter Mobile App
-│   ├── lib/
-│   │   ├── main.dart                    # Main app dengan integrasi API
-│   │   ├── models/
-│   │   │   └── transaction_model.dart   # Model dengan JSON serialization
-│   │   ├── services/
-│   │   │   └── api_service.dart         # HTTP client untuk Laravel API
-│   │   └── screens/
-│   │       ├── cari_riwayat_page.dart   # Halaman pencarian transaksi
-│   │       ├── login_screen.dart        # Halaman login
-│   │       └── register_screen.dart     # Halaman register
-│   └── pubspec.yaml         # Dependencies: http, uuid, intl
-│
-├── omzetku-api/            # Laravel Backend API
-│   ├── app/
-│   │   ├── Models/
-│   │   │   ├── User.php              # Model user dengan UMKM fields
-│   │   │   └── Transaction.php       # Model transaksi
-│   │   └── Http/Controllers/Api/
-│   │       ├── AuthController.php           # Auth endpoints
-│   │       └── TransactionController.php    # CRUD transaksi
-│   ├── database/migrations/
-│   │   ├── 2025_11_10_044532_add_umkm_fields_to_users_table.php
-│   │   └── 2025_11_17_000000_create_transactions_table.php
-│   └── routes/api.php       # API routes definition
-│
-├── INTEGRATION_GUIDE.md     # Panduan lengkap integrasi
-├── QUICKSTART.md            # Quick start commands
-└── API_CONFIG.md            # Konfigurasi API URL
+- Flutter SDK 3.24.5 atau lebih tinggi
+- Dart SDK 3.5.4 atau lebih tinggi
+- PHP 8.2 atau lebih tinggi
+- Composer 2.x
+- PostgreSQL 14 atau lebih tinggi
+- Git
 ```
 
-## 🚀 Quick Start
+### Backend Setup
 
-### 1. Install Dependencies
-
-**Flutter:**
-
+1. Clone repository
 ```bash
-cd omzetku
-flutter pub get
+git clone https://github.com/RiskiJayaPutra/omzetku.git
+cd omzetku/omzetku-api
 ```
 
-**Laravel:**
-
+2. Install dependencies
 ```bash
-cd omzetku-api
 composer install
 ```
 
-### 2. Setup Database
-
-Edit `.env` di folder `omzetku-api`:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=omzetku_db
-DB_USERNAME=root
-DB_PASSWORD=
+3. Setup environment
+```bash
+cp .env.example .env
 ```
 
-Jalankan migrations:
+4. Konfigurasi database di `.env`
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=omzetku
+DB_USERNAME=postgres
+DB_PASSWORD=your_password
+```
 
+5. Generate key dan jalankan migrasi
 ```bash
+php artisan key:generate
 php artisan migrate
 ```
 
-### 3. Konfigurasi API URL
-
-Edit `omzetku/lib/services/api_service.dart` baris 8:
-
-```dart
-// Pilih sesuai platform testing:
-static const String baseUrl = 'http://10.0.2.2:8000/api';  // Android Emulator
-// static const String baseUrl = 'http://localhost:8000/api';  // iOS Simulator
-// static const String baseUrl = 'http://192.168.1.X:8000/api';  // Physical Device
-```
-
-### 4. Jalankan Aplikasi
-
-**Start Laravel Server:**
-
+6. Jalankan server
 ```bash
-cd omzetku-api
 php artisan serve
 ```
 
-**Run Flutter App:**
+Backend akan berjalan di `http://localhost:8000`
 
+### Frontend Setup
+
+1. Masuk ke direktori Flutter
 ```bash
-cd omzetku
-flutter run
+cd ../omzetku
 ```
 
-## 📡 API Endpoints
+2. Install dependencies
+```bash
+flutter pub get
+```
+
+3. Konfigurasi API endpoint di `lib/services/api_service.dart`
+```dart
+static const String baseUrl = 'http://localhost:8000/api';
+```
+
+4. Jalankan aplikasi
+```bash
+# Untuk Web
+flutter run -d chrome
+
+# Untuk Android
+flutter run
+
+# Untuk iOS
+flutter run -d ios
+```
+
+## API Endpoints
 
 ### Authentication
-
-| Method | Endpoint        | Description        | Auth |
-| ------ | --------------- | ------------------ | ---- |
-| POST   | `/api/register` | Register user baru | ❌   |
-| POST   | `/api/login`    | Login user         | ❌   |
-| POST   | `/api/logout`   | Logout user        | ✅   |
-| GET    | `/api/user`     | Get user info      | ✅   |
+- `POST /api/register` - Registrasi pengguna baru
+- `POST /api/login` - Login pengguna
+- `POST /api/logout` - Logout pengguna
+- `GET /api/user` - Get data pengguna yang login
+- `POST /api/user/update` - Update profil pengguna
 
 ### Transactions
+- `GET /api/transactions` - List semua transaksi
+- `POST /api/transactions` - Buat transaksi baru
+- `GET /api/transactions/{id}` - Detail transaksi
+- `PUT /api/transactions/{id}` - Update transaksi
+- `DELETE /api/transactions/{id}` - Hapus transaksi
+- `GET /api/transactions/search?q=query` - Cari transaksi
+- `GET /api/transactions/statistics` - Statistik transaksi
 
-| Method | Endpoint                             | Description         | Auth |
-| ------ | ------------------------------------ | ------------------- | ---- |
-| GET    | `/api/transactions`                  | Get semua transaksi | ✅   |
-| POST   | `/api/transactions`                  | Tambah transaksi    | ✅   |
-| GET    | `/api/transactions/{id}`             | Detail transaksi    | ✅   |
-| PUT    | `/api/transactions/{id}`             | Update transaksi    | ✅   |
-| DELETE | `/api/transactions/{id}`             | Hapus transaksi     | ✅   |
-| GET    | `/api/transactions/search?q={query}` | Cari transaksi      | ✅   |
-| GET    | `/api/transactions/statistics`       | Statistik transaksi | ✅   |
+### Products
+- `GET /api/products` - List semua produk
+- `POST /api/products` - Buat produk baru
+- `GET /api/products/{id}` - Detail produk
+- `PUT /api/products/{id}` - Update produk
+- `DELETE /api/products/{id}` - Hapus produk
 
-## 🗄️ Database Schema
+## Struktur Proyek
 
-### Table: users
-
-- `id` - Primary Key
-- `nama_lengkap` - Nama lengkap pemilik UMKM
-- `nama_usaha` - Nama usaha/toko
-- `nomor_telepon` - Nomor telepon
-- `email` - Email (unique)
-- `password` - Password (hashed)
-- `timestamps`
-
-### Table: transactions
-
-- `id` - Primary Key
-- `user_id` - Foreign Key ke users
-- `title` - Judul transaksi
-- `type` - Enum: 'Pemasukan' / 'Pengeluaran'
-- `category` - Kategori transaksi
-- `amount` - Nominal (decimal)
-- `date_time` - Waktu transaksi
-- `notes` - Catatan (nullable)
-- `timestamps`
-
-## 📦 Dependencies
-
-### Flutter (pubspec.yaml)
-
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  http: ^1.2.0 # HTTP client
-  shared_preferences: ^2.2.2 # Local storage untuk token
-  intl: ^0.19.0 # Format tanggal/angka
-  uuid: ^4.3.3 # Generate UUID
+```
+omzetku/
+├── omzetku/                          # Flutter Frontend
+│   ├── lib/
+│   │   ├── models/                   # Data models
+│   │   ├── screens/                  # UI screens
+│   │   ├── services/                 # API services
+│   │   ├── utils/                    # Utilities & helpers
+│   │   ├── widgets/                  # Reusable widgets
+│   │   └── main.dart                 # Entry point
+│   ├── assets/                       # Images & assets
+│   └── pubspec.yaml                  # Flutter dependencies
+│
+└── omzetku-api/                      # Laravel Backend
+    ├── app/
+    │   ├── Http/Controllers/         # API controllers
+    │   └── Models/                   # Eloquent models
+    ├── database/
+    │   └── migrations/               # Database migrations
+    ├── routes/
+    │   └── api.php                   # API routes
+    └── public/
+        └── uploads/                  # User uploads
 ```
 
-### Laravel (composer.json)
+## Penggunaan
 
-```json
-{
-  "require": {
-    "laravel/framework": "^11.0",
-    "laravel/sanctum": "^4.0"
-  }
-}
-```
+### Registrasi & Login
+1. Buka aplikasi dan klik "Daftar"
+2. Isi form registrasi dengan data UMKM
+3. Login menggunakan email dan password
 
-## 🔧 Troubleshooting
+### Menambah Transaksi
+1. Klik tombol "+" di bottom navigation
+2. Pilih tipe: Pemasukan atau Pengeluaran
+3. Pilih kategori transaksi
+4. Untuk transaksi produk:
+   - Pilih kategori "Penjualan Produk" atau "Penjualan Jasa"
+   - Pilih produk dari dropdown
+   - Input quantity (jumlah)
+   - Nominal akan dihitung otomatis
+5. Klik "Simpan Transaksi"
 
-### Connection Refused
+### Mengelola Produk
+1. Buka menu drawer (kiri atas)
+2. Pilih "Manajemen Produk"
+3. Tambah produk baru dengan nama, harga, dan tipe
+4. Edit atau hapus produk yang sudah ada
 
-✅ Pastikan Laravel server berjalan: `php artisan serve`  
-✅ Cek URL di `api_service.dart` sudah benar  
-✅ Untuk Android Emulator gunakan `10.0.2.2` bukan `localhost`
+### Melihat Statistik
+1. Dashboard menampilkan ringkasan keuangan
+2. Tap "Grafik" untuk visualisasi detail
+3. Filter berdasarkan periode waktu
 
-### 401 Unauthorized
+## Testing
 
-✅ User belum login atau token expired  
-✅ Login kembali untuk generate token baru
-
-### Cannot find package
-
-✅ Jalankan `flutter pub get`  
-✅ Jalankan `composer install` di Laravel
-
-### CORS Error
-
-Tambahkan di `config/cors.php`:
-
-```php
-'paths' => ['api/*'],
-'allowed_origins' => ['*'],
-'allowed_methods' => ['*'],
-```
-
-## 📱 Testing
-
-### Test dengan Flutter App
-
-1. Buka aplikasi
-2. Register akun baru
-3. Login dengan akun tersebut
-4. Tambah transaksi baru
-5. Cari transaksi di halaman Riwayat
-
-### Test dengan API Client (Postman/Thunder Client)
-
-**Register:**
-
+### Backend Testing
 ```bash
-POST http://localhost:8000/api/register
-Content-Type: application/json
-
-{
-  "nama_lengkap": "John Doe",
-  "nama_usaha": "Warung Makan",
-  "nomor_telepon": "08123456789",
-  "email": "john@example.com",
-  "password": "password123",
-  "password_confirmation": "password123"
-}
+cd omzetku-api
+php artisan test
 ```
 
-**Add Transaction:**
-
+### Frontend Testing
 ```bash
-POST http://localhost:8000/api/transactions
-Authorization: Bearer {token_from_login}
-Content-Type: application/json
-
-{
-  "title": "Belanja Mingguan",
-  "type": "Pengeluaran",
-  "category": "Belanja",
-  "amount": 50000,
-  "date_time": "2025-11-17T10:00:00",
-  "notes": "Ayam, sayur, dan lainnya"
-}
+cd omzetku
+flutter test
 ```
 
-## 🎯 Roadmap
+## Deployment
 
-### ✅ Completed
+### Backend (Laravel)
+1. Setup server dengan PHP 8.2+ dan PostgreSQL
+2. Clone repository dan install dependencies
+3. Konfigurasi `.env` untuk production
+4. Jalankan migrasi: `php artisan migrate --force`
+5. Setup web server (Nginx/Apache)
+6. Konfigurasi CORS dan file permissions
 
-- [x] User authentication dengan Sanctum
-- [x] CRUD transaksi terintegrasi database
-- [x] Pencarian transaksi
-- [x] Statistik real-time
-- [x] UI responsive dan modern
+### Frontend (Flutter)
+```bash
+# Build untuk Web
+flutter build web
 
-### 🚧 Future Development
+# Build untuk Android
+flutter build apk --release
 
-- [ ] Edit transaksi
-- [ ] Export laporan (PDF/Excel)
-- [ ] Grafik visualisasi data
-- [ ] Notifikasi pengingat
-- [ ] Multi-currency support
-- [ ] Backup & restore data
-- [ ] Offline mode dengan sync
+# Build untuk iOS
+flutter build ios --release
+```
 
-## 📄 License
+## Kontribusi
 
-This project is for educational purposes.
+Kontribusi sangat diterima. Untuk perubahan besar, harap buka issue terlebih dahulu untuk mendiskusikan perubahan yang diinginkan.
 
-## 👥 Team
+1. Fork repository
+2. Buat branch fitur (`git checkout -b feature/AmazingFeature`)
+3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
+4. Push ke branch (`git push origin feature/AmazingFeature`)
+5. Buat Pull Request
 
-Developed for PTI Project - Semester 5
+## Lisensi
 
-## 📞 Support
+Proyek ini dilisensikan di bawah MIT License.
 
-For questions and support, please refer to:
+## Kontak
 
-- `INTEGRATION_GUIDE.md` - Full integration guide
-- `QUICKSTART.md` - Quick start commands
-- `API_CONFIG.md` - API configuration details
+Riski Jaya Putra - [@RiskiJayaPutra](https://github.com/RiskiJayaPutra)
 
----
+Repository: [https://github.com/RiskiJayaPutra/omzetku](https://github.com/RiskiJayaPutra/omzetku)
 
-**Happy Coding! 🚀**
+## Changelog
+
+### Version 1.0.0 (2025-12-06)
+- Initial release
+- Manajemen transaksi dengan kategori lengkap
+- Integrasi produk dengan perhitungan otomatis
+- Dashboard dan visualisasi data
+- Manajemen profil UMKM
+- Upload foto profil
+- Filter dan pencarian transaksi
+- Responsive design untuk mobile dan web
